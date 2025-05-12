@@ -22,12 +22,18 @@ import BrowseInternships from '../pages/student/BrowseInternships';
 import InternshipDetails from '../pages/student/InternshipDetails';
 import StudentApplications from '../pages/student/StudentApplications';
 import StudentReports from '../pages/student/StudentReports';
+import StudentNotifications from '../pages/student/StudentNotifications';
 
 // Company Pages
 import CompanyDashboard from '../pages/company/CompanyDashboard';
 import PostInternship from '../pages/company/PostInternship';
 import ManageInternships from '../pages/company/ManageInternships';
 import ManageApplicants from '../pages/company/ManageApplicants';
+import EditInternship from '../pages/company/EditInternship';
+import CompanyInternshipDetails from '../pages/company/InternshipDetails';
+import Notifications from '../pages/company/Notifications';
+import CompanyBrowseInternships from '../pages/company/BrowseInternships';
+import CompanyEvaluations from '../pages/company/CompanyEvaluations';
 
 // SCAD Office Pages
 import SCADDashboard from '../pages/scad/SCADDashboard';
@@ -35,6 +41,8 @@ import SCADCompanies from '../pages/scad/SCADCompanies';
 import SCADStudents from '../pages/scad/SCADStudents';
 import SCADInternships from '../pages/scad/SCADInternships';
 import SCADReports from '../pages/scad/SCADReports';
+import SCADInternshipDetails from '../pages/scad/SCADInternshipDetails';
+import SCADStudentProfile from '../pages/scad/SCADStudentProfile';
 
 // Supervisor Pages
 import SupervisorDashboard from '../pages/supervisor/SupervisorDashboard';
@@ -117,7 +125,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/student/internships/:id"
+        path="/student/internship/:id"
         element={
           <ProtectedRoute requiredRoles={[UserRole.STUDENT]}>
             <AppLayout><InternshipDetails /></AppLayout>
@@ -137,6 +145,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requiredRoles={[UserRole.STUDENT]}>
             <AppLayout><StudentReports /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/notifications"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.STUDENT]}>
+            <AppLayout><StudentNotifications /></AppLayout>
           </ProtectedRoute>
         }
       />
@@ -174,6 +190,46 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/company/internships/:id"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.COMPANY]}>
+            <AppLayout><CompanyInternshipDetails /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company/internships/:id/edit"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.COMPANY]}>
+            <AppLayout><EditInternship /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company/notifications"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.COMPANY]}>
+            <AppLayout><Notifications /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company/browse-internships"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.COMPANY]}>
+            <AppLayout><CompanyBrowseInternships /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company/evaluations"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.COMPANY]}>
+            <AppLayout><CompanyEvaluations /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
       
       {/* SCAD Office Routes */}
       <Route
@@ -201,10 +257,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/scad/students/:id"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADStudentProfile /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/scad/internships"
         element={
           <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
             <AppLayout><SCADInternships /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scad/internship/:id"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADInternshipDetails /></AppLayout>
           </ProtectedRoute>
         }
       />

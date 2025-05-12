@@ -24,14 +24,19 @@ import { useNotification } from '../../context/NotificationContext';
 const SCADCompanies = () => {
   const { addNotification } = useNotification();
   
-  // Get companies from dummy data
-  const companies = dummyUsers.filter(user => user.role === UserRole.COMPANY) as Company[];
+  // Only show companies applying (pending verification)
+  const [companies, setCompanies] = useState(
+    dummyUsers.filter(user => user.role === UserRole.COMPANY && !user.verified) as Company[]
+  );
   
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState('');
   const [industryFilter, setIndustryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   
+  // Modal state
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+
   // Get unique industries for filter
   const industries = Array.from(new Set(companies.map(company => company.industry)));
 
@@ -51,13 +56,15 @@ const SCADCompanies = () => {
   });
 
   const handleVerifyCompany = (companyId: string) => {
-    // In a real application, this would make an API call to verify the company
+    setCompanies(prev => prev.filter(c => c.id !== companyId));
     addNotification('Company successfully verified', 'success');
+    setSelectedCompany(null);
   };
 
   const handleRejectCompany = (companyId: string) => {
-    // In a real application, this would make an API call to reject the company
+    setCompanies(prev => prev.filter(c => c.id !== companyId));
     addNotification('Company verification rejected', 'success');
+    setSelectedCompany(null);
   };
 
   // Get internship counts for each company
@@ -93,27 +100,23 @@ const SCADCompanies = () => {
           <Select
             value={industryFilter}
             onChange={(e) => setIndustryFilter(e.target.value)}
-            placeholder="All Industries"
-          >
-            <option value="">All Industries</option>
-            {industries.map((industry) => (
-              <option key={industry} value={industry}>
-                {industry}
-              </option>
-            ))}
-          </Select>
+            options={[
+              { value: '', label: 'All Industries' },
+              ...industries.map((industry) => ({ value: industry, label: industry })),
+            ]}
+          />
         </div>
         
         <div className="md:w-48">
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            placeholder="All Statuses"
-          >
-            <option value="">All Statuses</option>
-            <option value="verified">Verified</option>
-            <option value="pending">Pending Verification</option>
-          </Select>
+            options={[
+              { value: '', label: 'All Statuses' },
+              { value: 'verified', label: 'Verified' },
+              { value: 'pending', label: 'Pending Verification' },
+            ]}
+          />
         </div>
       </div>
 
@@ -198,6 +201,7 @@ const SCADCompanies = () => {
                         variant="outline"
                         leftIcon={<Eye size={16} />}
                         className="mr-2 md:mr-0 md:mb-2"
+                        onClick={() => setSelectedCompany(company)}
                       >
                         View Details
                       </Button>
@@ -253,6 +257,26 @@ const SCADCompanies = () => {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Company Details Modal */}
+      {selectedCompany && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow max-w-md w-full">
+            <h2 className="text-xl font-bold mb-2">{selectedCompany.companyName}</h2>
+            <p><b>Industry:</b> {selectedCompany.industry}</p>
+            <p><b>Location:</b> {selectedCompany.location}</p>
+            <p><b>Website:</b> {selectedCompany.website}</p>
+            <p><b>Size:</b> {selectedCompany.size}</p>
+            <p><b>Description:</b> {selectedCompany.description}</p>
+            <p><b>Joined:</b> {new Date(selectedCompany.createdAt).toLocaleDateString()}</p>
+            <div className="flex gap-2 mt-4">
+              <Button onClick={() => handleVerifyCompany(selectedCompany.id)} variant="success">Accept</Button>
+              <Button onClick={() => handleRejectCompany(selectedCompany.id)} variant="danger">Reject</Button>
+              <Button onClick={() => setSelectedCompany(null)} variant="outline">Close</Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

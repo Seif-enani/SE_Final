@@ -1,7 +1,7 @@
 import { useAuth } from '../../context/AuthContext';
 import Card, { CardHeader, CardContent } from '../../components/common/Card';
 import Button from '../../components/common/Button';
-import { Link } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import { 
   Briefcase, 
   Clock, 
@@ -10,10 +10,12 @@ import {
   AlertCircle, 
   BarChart, 
   CalendarDays,
-  Search 
+  Search,
+  Bell
 } from 'lucide-react';
 import { dummyInternships } from '../../data/internships';
 import { Student } from '../../types/user';
+import StudentNotifications from './StudentNotifications';
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
@@ -31,11 +33,13 @@ const StudentDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {student?.name?.split(' ')[0]}</p>
-        </div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
+        <Link to="/student/notifications" className="relative">
+          <Bell className="w-7 h-7 text-yellow-500 hover:text-yellow-600" />
+          {/* Optionally add a red dot for unread */}
+          {/* <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span> */}
+        </Link>
       </div>
       
       {/* Stats Section */}
@@ -339,6 +343,9 @@ const StudentDashboard = () => {
           </Card>
         </div>
       </div>
+      <Routes>
+        <Route path="/student/notifications" element={<StudentNotifications />} />
+      </Routes>
     </div>
   );
 };

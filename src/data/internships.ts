@@ -78,6 +78,55 @@ export const dummyInternships: Internship[] = [
     acceptedStudents: [],
     createdAt: '2023-04-20T15:15:00Z',
     updatedAt: '2023-04-25T12:10:00Z'
+  },
+  {
+    id: 'i4',
+    companyId: 'c1',
+    title: 'Frontend Developer Intern',
+    department: 'Web Development',
+    description: 'Work with our frontend team to build beautiful and responsive web interfaces using React and Tailwind CSS. You will collaborate with designers and backend developers.',
+    requirements: [
+      'Basic knowledge of HTML, CSS, and JavaScript',
+      'Experience with React is a plus',
+      'Attention to detail',
+      'Good communication skills'
+    ],
+    location: 'Remote',
+    type: 'remote',
+    duration: 8,
+    startDate: '2023-08-01',
+    endDate: '2023-09-25',
+    stipend: 3000,
+    status: 'pending',
+    applicantsCount: 0,
+    applicants: [],
+    acceptedStudents: [],
+    createdAt: '2023-07-10T09:00:00Z',
+    updatedAt: '2023-07-15T10:00:00Z'
+  },
+  {
+    id: 'i5',
+    companyId: 'c1',
+    title: 'QA Tester Intern',
+    department: 'Quality Assurance',
+    description: 'Join our QA team to test web and mobile applications, write test cases, and help ensure product quality before release.',
+    requirements: [
+      'Attention to detail',
+      'Basic understanding of software testing',
+      'Good documentation skills'
+    ],
+    location: 'Cairo, Egypt',
+    type: 'onsite',
+    duration: 6,
+    startDate: '2023-09-01',
+    endDate: '2023-10-15',
+    stipend: 2500,
+    status: 'draft',
+    applicantsCount: 0,
+    applicants: [],
+    acceptedStudents: [],
+    createdAt: '2023-08-01T12:00:00Z',
+    updatedAt: '2023-08-05T13:00:00Z'
   }
 ];
 

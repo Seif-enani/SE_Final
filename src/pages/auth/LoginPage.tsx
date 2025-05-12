@@ -92,7 +92,6 @@ const LoginPage = () => {
               placeholder="you@example.com"
               required
               autoComplete="email"
-              leftIcon={<AtSign className="h-5 w-5 text-gray-400" />}
             />
             
             <Input
@@ -104,7 +103,6 @@ const LoginPage = () => {
               placeholder="••••••••"
               required
               autoComplete="current-password"
-              leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
             />
             
             <div className="flex items-center justify-between">
@@ -161,6 +159,14 @@ const LoginPage = () => {
               </div>
               <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
                 <p><strong>SCAD Office:</strong> mohamed.hassan@guc.edu.eg</p>
+                <p><strong>Password:</strong> password123</p>
+              </div>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
+                <p><strong>Supervisor:</strong> sara.ahmed@techcorp.com</p>
+                <p><strong>Password:</strong> password123</p>
+              </div>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
+                <p><strong>Academic Staff:</strong> dr.mahmoud@guc.edu.eg</p>
                 <p><strong>Password:</strong> password123</p>
               </div>
             </div>

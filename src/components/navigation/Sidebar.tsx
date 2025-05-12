@@ -14,7 +14,8 @@ import {
   GraduationCap,
   ClipboardList,
   CheckSquare,
-  HelpCircle
+  HelpCircle,
+  Bell
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -49,15 +50,19 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
         { path: '/student', label: 'Dashboard', icon: <Home size={20} /> },
         { path: '/student/internships', label: 'Browse Internships', icon: <Briefcase size={20} /> },
         { path: '/student/applications', label: 'My Applications', icon: <ClipboardList size={20} /> },
+        { path: '/student/notifications', label: 'Notifications', icon: <Bell size={20} /> },
         { path: '/student/reports', label: 'Reports & Evaluations', icon: <FileText size={20} /> },
       );
       break;
     case UserRole.COMPANY:
       navItems.push(
         { path: '/company', label: 'Dashboard', icon: <Home size={20} /> },
+        { path: '/company/browse-internships', label: 'Browse Internships', icon: <Briefcase size={20} /> },
         { path: '/company/post-internship', label: 'Post Internship', icon: <FileText size={20} /> },
         { path: '/company/internships', label: 'Manage Internships', icon: <Briefcase size={20} /> },
         { path: '/company/applicants', label: 'Applicants', icon: <Users size={20} /> },
+        { path: '/company/notifications', label: 'Notifications', icon: <Bell size={20} /> },
+        { path: '/company/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
       );
       break;
     case UserRole.SCAD_OFFICE:
@@ -67,6 +72,7 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
         { path: '/scad/students', label: 'Students', icon: <GraduationCap size={20} /> },
         { path: '/scad/internships', label: 'Internships', icon: <Briefcase size={20} /> },
         { path: '/scad/reports', label: 'Reports', icon: <FileText size={20} /> },
+        { path: '/scad/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
       );
       break;
     case UserRole.SUPERVISOR:

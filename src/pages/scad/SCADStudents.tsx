@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Search, 
   GraduationCap, 
@@ -18,12 +18,22 @@ import Button from '../../components/common/Button';
 import { Input, Select } from '../../components/common/FormElements';
 import { dummyUsers } from '../../data/users';
 import { UserRole, Student } from '../../types/user';
-import { dummyInternships, dummyApplications } from '../../data/internships';
-import { useNotification } from '../../context/NotificationContext';
+import { dummyInternships, dummyApplications, dummyReports } from '../../data/internships';
+import { Report } from '../../types/internship';
+// Try to import Modal directly, fallback to inline if not found
+let Modal: any;
+try {
+  // @ts-ignore
+  Modal = require('../../components/common/Modal').default;
+} catch {
+  Modal = ({ children, onClose }: any) => (
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded shadow-lg relative">{children}<button onClick={onClose} className="absolute top-2 right-2">X</button></div>
+    </div>
+  );
+}
 
 const SCADStudents = () => {
-  const { addNotification } = useNotification();
-  
   // Get students from dummy data
   const students = dummyUsers.filter(user => user.role === UserRole.STUDENT) as Student[];
   
@@ -98,6 +108,10 @@ const SCADStudents = () => {
     };
   };
 
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [selectedStudentReports, setSelectedStudentReports] = useState<Report[]>([]);
+  const [selectedReport, setSelectedReport] = useState<Report|null>(null);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -126,27 +140,23 @@ const SCADStudents = () => {
           <Select
             value={facultyFilter}
             onChange={(e) => setFacultyFilter(e.target.value)}
-            placeholder="All Faculties"
-          >
-            <option value="">All Faculties</option>
-            {faculties.map((faculty) => (
-              <option key={faculty} value={faculty}>
-                {faculty}
-              </option>
-            ))}
-          </Select>
+            options={[
+              { value: '', label: 'All Faculties' },
+              ...faculties.map(faculty => ({ value: faculty, label: faculty }))
+            ]}
+          />
         </div>
         
         <div className="md:w-48">
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            placeholder="All Statuses"
-          >
-            <option value="">All Statuses</option>
-            <option value="active">Active Internship</option>
-            <option value="inactive">No Active Internship</option>
-          </Select>
+            options={[
+              { value: '', label: 'All Statuses' },
+              { value: 'active', label: 'Active Internship' },
+              { value: 'inactive', label: 'No Active Internship' },
+            ]}
+          />
         </div>
       </div>
 
@@ -217,8 +227,8 @@ const SCADStudents = () => {
                             </p>
                           </div>
                           <p className="text-xs text-gray-500">
-                            {new Date(internshipDetails.startDate).toLocaleDateString()} - 
-                            {new Date(internshipDetails.endDate).toLocaleDateString()}
+                            {new Date(internshipDetails.startDate || '').toLocaleDateString()} -
+                            {new Date(internshipDetails.endDate || '').toLocaleDateString()}
                           </p>
                         </div>
                       )}
@@ -233,7 +243,7 @@ const SCADStudents = () => {
                             </p>
                           </div>
                           <p className="text-xs text-gray-500">
-                            Applied on {new Date(internshipDetails.appliedAt).toLocaleDateString()}
+                            Applied on {new Date(internshipDetails.appliedAt || '').toLocaleDateString()}
                           </p>
                         </div>
                       )}
@@ -261,6 +271,11 @@ const SCADStudents = () => {
                         size="sm"
                         variant="outline"
                         leftIcon={<FileText size={16} />}
+                        onClick={() => {
+                          const reports = dummyReports.filter(r => r.studentId === student.id);
+                          setSelectedStudentReports(reports);
+                          setReportModalOpen(true);
+                        }}
                       >
                         View Reports
                       </Button>
@@ -288,6 +303,61 @@ const SCADStudents = () => {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Reports Modal */}
+      {reportModalOpen && (
+        <Modal onClose={() => { setReportModalOpen(false); setSelectedReport(null); }}>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold">Student Reports</h2>
+            {selectedReport ? (
+              <div>
+                <h3 className="font-semibold text-lg mb-2">{selectedReport.title}</h3>
+                <div className="mb-2 text-sm text-gray-600">Status: {selectedReport.status} | Submitted: {new Date(selectedReport.submissionDate).toLocaleDateString()}</div>
+                <div className="mb-2"><strong>Content:</strong> {selectedReport.content}</div>
+                {selectedReport.attachments && selectedReport.attachments.length > 0 && (
+                  <div className="mb-2">
+                    <strong>Attachments:</strong>
+                    <ul className="list-disc ml-6">
+                      {selectedReport.attachments.map((file: string, idx: number) => (
+                        <li key={idx}><a href={file} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{file}</a></li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {selectedReport.supervisorEvaluation && (
+                  <div className="mb-2">
+                    <strong>Supervisor Evaluation:</strong> {selectedReport.supervisorEvaluation.comments} (Rating: {selectedReport.supervisorEvaluation.rating})
+                  </div>
+                )}
+                {selectedReport.academicEvaluation && (
+                  <div className="mb-2">
+                    <strong>Academic Evaluation:</strong> {selectedReport.academicEvaluation.comments} (Rating: {selectedReport.academicEvaluation.rating})
+                  </div>
+                )}
+                <Button variant="outline" onClick={() => setSelectedReport(null)}>Back to Reports List</Button>
+              </div>
+            ) : (
+              <div>
+                {selectedStudentReports.length === 0 ? (
+                  <div className="text-gray-500">No reports found for this student.</div>
+                ) : (
+                  <ul className="space-y-2">
+                    {selectedStudentReports.map(report => (
+                      <li key={report.id} className="border rounded p-2 flex justify-between items-center">
+                        <div>
+                          <div className="font-medium">{report.title}</div>
+                          <div className="text-xs text-gray-500">Status: {report.status} | Submitted: {new Date(report.submissionDate).toLocaleDateString()}</div>
+                        </div>
+                        <Button size="sm" variant="primary" onClick={() => setSelectedReport(report)}>View Details</Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        </Modal>
       )}
     </div>
   );

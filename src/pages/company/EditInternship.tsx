@@ -1,94 +1,84 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../../context/NotificationContext';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { dummyInternships } from '../../data/internships';
+import { useAuth } from '../../context/AuthContext';
 import Card, { CardHeader, CardContent } from '../../components/common/Card';
-import { Input, Select, Textarea, RadioGroup } from '../../components/common/FormElements';
+import { Input, Textarea, RadioGroup } from '../../components/common/FormElements';
 import Button from '../../components/common/Button';
 import { Save, X, Plus, Trash2 } from 'lucide-react';
+import { useNotification } from '../../context/NotificationContext';
 
-const PostInternship = () => {
+const EditInternship = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const { addNotification } = useNotification();
-  
-  const [formData, setFormData] = useState({
-    title: '',
-    department: '',
-    description: '',
-    requirements: [''],
-    location: '',
-    type: 'onsite',
-    duration: '',
-    startDate: '',
-    endDate: '',
-    stipend: '',
-    skills: [''],
-    isPaid: 'paid',
-  });
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const internship = dummyInternships.find(i => i.id === id && i.companyId === currentUser?.id);
+
+  const [formData, setFormData] = useState(
+    internship ? {
+      title: internship.title,
+      department: internship.department,
+      description: internship.description,
+      requirements: [...internship.requirements],
+      location: internship.location,
+      type: internship.type,
+      duration: internship.duration,
+      startDate: internship.startDate,
+      endDate: internship.endDate,
+      stipend: internship.stipend,
+    } : null
+  );
+
+  if (!internship || !formData) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Internship Not Found</h2>
+        <p className="text-gray-600 mb-6">The internship you're trying to edit doesn't exist or does not belong to your company.</p>
+        <Button variant="outline" onClick={() => navigate('/company/internships')}>
+          Back to Manage Internships
+        </Button>
+      </div>
+    );
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, type: e.target.value });
-  };
-  
+
   const handleRequirementChange = (index: number, value: string) => {
     const updatedRequirements = [...formData.requirements];
     updatedRequirements[index] = value;
     setFormData({ ...formData, requirements: updatedRequirements });
   };
-  
+
   const addRequirement = () => {
     setFormData({ ...formData, requirements: [...formData.requirements, ''] });
   };
-  
+
   const removeRequirement = (index: number) => {
     const updatedRequirements = formData.requirements.filter((_, i) => i !== index);
     setFormData({ ...formData, requirements: updatedRequirements });
   };
-  
-  const handleSkillChange = (index: number, value: string) => {
-    const updatedSkills = [...formData.skills];
-    updatedSkills[index] = value;
-    setFormData({ ...formData, skills: updatedSkills });
+
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, type: e.target.value as 'remote' | 'onsite' | 'hybrid' });
   };
-  
-  const addSkill = () => {
-    setFormData({ ...formData, skills: [...formData.skills, ''] });
-  };
-  
-  const removeSkill = (index: number) => {
-    const updatedSkills = formData.skills.filter((_, i) => i !== index);
-    setFormData({ ...formData, skills: updatedSkills });
-  };
-  
-  const handlePaidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, isPaid: e.target.value });
-  };
-  
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      addNotification('Internship posted successfully!', 'success');
-      setIsSubmitting(false);
-      navigate('/company/internships');
-    }, 1000);
+    // Simulate API update
+    addNotification('Internship updated successfully!', 'success');
+    navigate('/company/internships');
   };
-  
+
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Post New Internship</h1>
-        <p className="text-gray-600">Create a new internship opportunity for students</p>
+        <h1 className="text-2xl font-bold text-gray-900">Edit Internship</h1>
+        <p className="text-gray-600">Update the details of your internship opportunity</p>
       </div>
-      
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Form */}
@@ -103,10 +93,8 @@ const PostInternship = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="e.g. Software Engineering Intern"
                     required
                   />
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       label="Department"
@@ -114,21 +102,17 @@ const PostInternship = () => {
                       name="department"
                       value={formData.department}
                       onChange={handleChange}
-                      placeholder="e.g. Engineering, Finance, Marketing"
                       required
                     />
-                    
                     <Input
                       label="Location"
                       id="location"
                       name="location"
                       value={formData.location}
                       onChange={handleChange}
-                      placeholder="e.g. Cairo, Egypt"
                       required
                     />
                   </div>
-                  
                   <RadioGroup
                     label="Internship Type"
                     name="type"
@@ -141,21 +125,18 @@ const PostInternship = () => {
                     ]}
                     inline
                   />
-                  
                   <Textarea
                     label="Description"
                     id="description"
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    placeholder="Provide a detailed description of the internship, including responsibilities and what interns will learn."
                     rows={6}
                     required
                   />
                 </div>
               </CardContent>
             </Card>
-            
             <Card>
               <CardHeader 
                 title="Requirements" 
@@ -183,7 +164,6 @@ const PostInternship = () => {
                       )}
                     </div>
                   ))}
-                  
                   <button
                     type="button"
                     onClick={addRequirement}
@@ -195,48 +175,7 @@ const PostInternship = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Skills Required Card */}
-            <Card>
-              <CardHeader 
-                title="Skills Required" 
-                subtitle="List the skills required for this internship"
-              />
-              <CardContent>
-                <div className="space-y-3">
-                  {formData.skills.map((skill, index) => (
-                    <div key={index} className="flex items-center">
-                      <Input
-                        id={`skill-${index}`}
-                        value={skill}
-                        onChange={(e) => handleSkillChange(index, e.target.value)}
-                        placeholder="e.g. React, Python"
-                        className="flex-1"
-                      />
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => removeSkill(index)}
-                          className="ml-2 text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={addSkill}
-                    className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <Plus size={16} className="mr-2" />
-                    Add Skill
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
-          
           {/* Side Form */}
           <div className="space-y-6">
             <Card>
@@ -250,10 +189,8 @@ const PostInternship = () => {
                     type="number"
                     value={formData.duration}
                     onChange={handleChange}
-                    placeholder="e.g. 12"
                     required
                   />
-                  
                   <div className="grid grid-cols-1 gap-4">
                     <Input
                       label="Start Date"
@@ -264,7 +201,6 @@ const PostInternship = () => {
                       onChange={handleChange}
                       required
                     />
-                    
                     <Input
                       label="End Date"
                       id="endDate"
@@ -275,7 +211,6 @@ const PostInternship = () => {
                       required
                     />
                   </div>
-                  
                   <Input
                     label="Monthly Stipend (EGP)"
                     id="stipend"
@@ -283,26 +218,11 @@ const PostInternship = () => {
                     type="number"
                     value={formData.stipend}
                     onChange={handleChange}
-                    placeholder="e.g. 5000"
                     required
-                  />
-                  
-                  {/* Paid/Unpaid Radio Group */}
-                  <RadioGroup
-                    label="Is this internship paid?"
-                    name="isPaid"
-                    value={formData.isPaid}
-                    onChange={handlePaidChange}
-                    options={[
-                      { value: 'paid', label: 'Paid' },
-                      { value: 'unpaid', label: 'Unpaid' },
-                    ]}
-                    inline
                   />
                 </div>
               </CardContent>
             </Card>
-            
             <Card>
               <CardHeader title="Actions" />
               <CardContent>
@@ -312,17 +232,15 @@ const PostInternship = () => {
                     variant="primary"
                     fullWidth
                     leftIcon={<Save size={18} />}
-                    isLoading={isSubmitting}
                   >
-                    Post Internship
+                    Save Changes
                   </Button>
-                  
                   <Button
                     type="button"
                     variant="outline"
                     fullWidth
                     leftIcon={<X size={18} />}
-                    onClick={() => navigate('/company')}
+                    onClick={() => navigate('/company/internships')}
                   >
                     Cancel
                   </Button>
@@ -336,4 +254,4 @@ const PostInternship = () => {
   );
 };
 
-export default PostInternship;
+export default EditInternship; 

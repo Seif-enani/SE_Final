@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import Card, { CardHeader, CardContent } from '../../components/common/Card';
@@ -9,7 +9,51 @@ const StudentApplications = () => {
   const studentId = 's1';
   
   // Get applications for the student
-  const applications = dummyApplications.filter(app => app.studentId === studentId);
+  const applications = [
+    ...dummyApplications.filter(app => app.studentId === studentId),
+    {
+      id: 'a10',
+      internshipId: 'i1',
+      studentId: 's1',
+      status: 'pending',
+      coverLetter: 'I am excited to join your engineering team.',
+      resumeUrl: '/dummy-resume-1.pdf',
+      appliedAt: '2024-06-01T10:00:00Z',
+      updatedAt: '2024-06-01T10:00:00Z',
+    },
+    {
+      id: 'a11',
+      internshipId: 'i2',
+      studentId: 's1',
+      status: 'accepted',
+      coverLetter: 'Business analytics is my passion.',
+      resumeUrl: '/dummy-resume-2.pdf',
+      appliedAt: '2024-05-15T09:00:00Z',
+      updatedAt: '2024-05-20T10:00:00Z',
+    },
+    {
+      id: 'a12',
+      internshipId: 'i3',
+      studentId: 's1',
+      status: 'rejected',
+      coverLetter: 'I have experience in mobile development.',
+      resumeUrl: '/dummy-resume-3.pdf',
+      appliedAt: '2024-04-10T08:00:00Z',
+      updatedAt: '2024-04-15T10:00:00Z',
+    },
+    {
+      id: 'a13',
+      internshipId: 'i4',
+      studentId: 's1',
+      status: 'finalized',
+      coverLetter: 'Frontend development is my strength.',
+      resumeUrl: '/dummy-resume-4.pdf',
+      appliedAt: '2024-03-20T11:00:00Z',
+      updatedAt: '2024-03-25T10:00:00Z',
+    },
+  ];
+  
+  const [statusFilter, setStatusFilter] = useState('all');
   
   // Status badge styling
   const getStatusBadge = (status: string) => {
@@ -33,16 +77,40 @@ const StudentApplications = () => {
     };
   };
   
+  // Filter applications based on status filter
+  const filteredApplications = applications.filter(app => {
+    if (statusFilter === 'all') return true;
+    if (statusFilter === 'current') return app.status === 'accepted';
+    if (statusFilter === 'finalized') return app.status === 'finalized';
+    return true;
+  });
+  
+  useEffect(() => {
+    // Simulate notification logic for acceptance
+    // In a real app, this would push to a notification context or API
+    // For now, notifications are static dummy data in StudentNotifications.tsx
+  }, []);
+  
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">My Applications</h1>
         <p className="text-gray-600">Track the status of your internship applications</p>
       </div>
-      
+      <div className="mb-4 flex gap-4">
+        <select
+          className="border rounded px-3 py-2 text-sm"
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="current">Current Internships</option>
+          <option value="finalized">Finalized Internships</option>
+        </select>
+      </div>
       <div className="space-y-6">
-        {applications.length > 0 ? (
-          applications.map(application => {
+        {filteredApplications.length > 0 ? (
+          filteredApplications.map(application => {
             const internship = dummyInternships.find(i => i.id === application.internshipId);
             if (!internship) return null;
             

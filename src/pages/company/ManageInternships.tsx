@@ -6,13 +6,13 @@ import Button from '../../components/common/Button';
 import { Input, Select } from '../../components/common/FormElements';
 import { dummyInternships } from '../../data/internships';
 import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
 
 const ManageInternships = () => {
   const navigate = useNavigate();
   const { addNotification } = useNotification();
-  
-  // Assuming the current company has ID 'c1'
-  const companyId = 'c1';
+  const { currentUser } = useAuth();
+  const companyId = currentUser?.id || 'c1';
   
   // Filter internships for this company
   const companyInternships = dummyInternships.filter(internship => internship.companyId === companyId);
@@ -66,16 +66,16 @@ const ManageInternships = () => {
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            placeholder="Filter by Status"
-          >
-            <option value="">All Statuses</option>
-            <option value="draft">Draft</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="closed">Closed</option>
-            <option value="completed">Completed</option>
-          </Select>
+            options={[
+              { value: '', label: 'All Statuses' },
+              { value: 'draft', label: 'Draft' },
+              { value: 'pending', label: 'Pending' },
+              { value: 'approved', label: 'Approved' },
+              { value: 'rejected', label: 'Rejected' },
+              { value: 'closed', label: 'Closed' },
+              { value: 'completed', label: 'Completed' },
+            ]}
+          />
         </div>
       </div>
       
