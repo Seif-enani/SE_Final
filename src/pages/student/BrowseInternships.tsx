@@ -74,11 +74,52 @@ const BrowseInternships = () => {
     // For now, notifications are static dummy data in StudentNotifications.tsx
   }, []);
   
+  // Dummy: Assume student major is Computer Science
+  const studentMajor = 'Computer Science';
+  const videoUrl = 'https://www.youtube.com/embed/1I5ZMmrOfnA'; // Example video
+  const videoDescription =
+    studentMajor === 'Computer Science'
+      ? 'Learn what types of internships count towards your Computer Science degree requirement. This includes software engineering, data science, IT support, cybersecurity, and more.'
+      : 'Learn what types of internships count towards your degree requirement.';
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Browse Internships</h1>
         <p className="text-gray-600">Find and apply for internship opportunities</p>
+      </div>
+      
+      {/* Major-specific Internship Requirement Video */}
+      <div className="mb-8">
+        <Card>
+          <CardHeader title={`What Internships Count for ${studentMajor}?`} subtitle="Watch this short video to understand your options" />
+          <CardContent>
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="w-full md:w-1/2">
+                <div className="aspect-w-16 aspect-h-9">
+                  <iframe
+                    width="100%"
+                    height="240"
+                    src={videoUrl}
+                    title="Internship Requirement Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2">
+                <p className="text-gray-700 text-base mb-2">{videoDescription}</p>
+                <ul className="list-disc ml-6 text-gray-600 text-sm">
+                  <li>Internships must be related to your major field of study.</li>
+                  <li>Remote, in-person, and hybrid roles are accepted.</li>
+                  <li>Minimum duration and paid/unpaid status may vary by department.</li>
+                  <li>Check with your academic advisor for approval if unsure.</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
       
       {/* Suggested Companies */}

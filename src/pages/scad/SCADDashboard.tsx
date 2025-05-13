@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { 
   Building2, Users, Briefcase, FileText, 
   CheckCircle, XCircle, Clock, AlertTriangle,
-  BarChart4, TrendingUp, PieChart, Search
+  BarChart4, TrendingUp, PieChart, Search,
+  Video
 } from 'lucide-react';
 import Card, { CardHeader, CardContent } from '../../components/common/Card';
 import Button from '../../components/common/Button';
@@ -36,6 +37,20 @@ const SCADDashboard = () => {
   
   // Tabs for quick access reports
   const [activeTab, setActiveTab] = useState<'internships' | 'applications' | 'reports'>('internships');
+
+  // Sidebar links (for demo, normally in layout/sidebar component)
+  const sidebarLinks = [
+    { label: 'Dashboard', to: '/scad', icon: <BarChart4 size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Companies', to: '/scad/companies', icon: <Building2 size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Students', to: '/scad/students', icon: <Users size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Internships', to: '/scad/internships', icon: <Briefcase size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Reports', to: '/scad/reports', icon: <FileText size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Evaluations', to: '/scad/evaluations', icon: <CheckCircle size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Appointments & Video Calls', to: '/scad/appointments', icon: <Video size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Profile', to: '/profile', icon: <Users size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Settings', to: '/settings', icon: <Clock size={18} />, roles: [UserRole.SCAD_OFFICE] },
+    { label: 'Help & Support', to: '/support', icon: <AlertTriangle size={18} />, roles: [UserRole.SCAD_OFFICE] },
+  ];
 
   return (
     <div className="space-y-6">

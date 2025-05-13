@@ -15,7 +15,8 @@ import {
   ClipboardList,
   CheckSquare,
   HelpCircle,
-  Bell
+  Bell,
+  Video
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -73,6 +74,8 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
         { path: '/scad/internships', label: 'Internships', icon: <Briefcase size={20} /> },
         { path: '/scad/reports', label: 'Reports', icon: <FileText size={20} /> },
         { path: '/scad/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
+        { path: '/scad/appointments', label: 'Appointments & Video Calls', icon: <Video size={20} /> },
+        { path: '/scad/workshops', label: 'Workshops', icon: <Briefcase size={20} /> },
       );
       break;
     case UserRole.SUPERVISOR:

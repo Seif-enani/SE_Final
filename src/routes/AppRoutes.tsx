@@ -43,6 +43,9 @@ import SCADInternships from '../pages/scad/SCADInternships';
 import SCADReports from '../pages/scad/SCADReports';
 import SCADInternshipDetails from '../pages/scad/SCADInternshipDetails';
 import SCADStudentProfile from '../pages/scad/SCADStudentProfile';
+import SCADEvaluations from '../pages/scad/SCADEvaluations';
+import SCADAppointments from '../pages/scad/SCADAppointments';
+import SCADWorkshops from '../pages/scad/SCADWorkshops';
 
 // Supervisor Pages
 import SupervisorDashboard from '../pages/supervisor/SupervisorDashboard';
@@ -285,6 +288,30 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
             <AppLayout><SCADReports /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scad/evaluations"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADEvaluations /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scad/appointments"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADAppointments /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scad/workshops"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADWorkshops /></AppLayout>
           </ProtectedRoute>
         }
       />
