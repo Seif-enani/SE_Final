@@ -101,7 +101,7 @@ const ProfilePage = () => {
 
   // Only for students: local state for editable fields
   const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(
-    currentUser?.role === UserRole.STUDENT
+    (currentUser?.role === UserRole.STUDENT || currentUser?.role === UserRole.PRO_STUDENT)
       ? {
           jobInterests: '',
           major: (currentUser as Student).major || '',
@@ -168,7 +168,7 @@ const ProfilePage = () => {
   if (!currentUser) return null;
 
   // STUDENT PROFILE UI
-  if (currentUser.role === UserRole.STUDENT) {
+  if (currentUser.role === UserRole.STUDENT || currentUser.role === UserRole.PRO_STUDENT) {
     if (!studentProfile) return null;
     return (
       <div className="space-y-6">

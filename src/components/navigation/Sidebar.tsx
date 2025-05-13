@@ -93,6 +93,17 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
         { path: '/academic/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
       );
       break;
+    case UserRole.PRO_STUDENT:
+      navItems.push(
+        { path: '/prostudent', label: 'Dashboard', icon: <Home size={20} /> },
+        { path: '/prostudent/internships', label: 'Browse Internships', icon: <Briefcase size={20} /> },
+        { path: '/prostudent/applications', label: 'My Applications', icon: <ClipboardList size={20} /> },
+        { path: '/prostudent/notifications', label: 'Notifications', icon: <Bell size={20} /> },
+        { path: '/prostudent/reports', label: 'Reports & Evaluations', icon: <FileText size={20} /> },
+        { path: '/prostudent/appointments', label: 'Appointments & Video Calls', icon: <Video size={20} /> },
+        { path: '/prostudent/advanced', label: 'Advanced Features', icon: <BarChart size={20} /> },
+      );
+      break;
     default:
       break;
   }

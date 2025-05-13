@@ -46,6 +46,9 @@ const LoginPage = () => {
             case UserRole.SUPERVISOR:
               navigate('/faculty');
               break;
+            case UserRole.PRO_STUDENT:
+              navigate('/prostudent');
+              break;
             default:
               navigate('/');
           }
@@ -64,6 +67,36 @@ const LoginPage = () => {
     }
   };
 
+  const handleDemoLogin = (role: UserRole) => {
+    let demoEmail = '';
+    let demoPassword = 'password123';
+    switch (role) {
+      case UserRole.STUDENT:
+        demoEmail = 'ahmed.mohamed@student.guc.edu.eg';
+        break;
+      case UserRole.COMPANY:
+        demoEmail = 'john.smith@techcorp.com';
+        break;
+      case UserRole.SCAD_OFFICE:
+        demoEmail = 'mohamed.hassan@guc.edu.eg';
+        break;
+      case UserRole.SUPERVISOR:
+        demoEmail = 'sara.ahmed@techcorp.com';
+        break;
+      case UserRole.PRO_STUDENT:
+        demoEmail = 'prostudentdemo@guc.edu.eg';
+        break;
+      default:
+        break;
+    }
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setTimeout(() => {
+      // Simulate form submit
+      document.getElementById('login-form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md">
@@ -79,7 +112,7 @@ const LoginPage = () => {
             </div>
           )}
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form id="login-form" onSubmit={handleSubmit} className="space-y-6">
             <Input
               label="Email Address"
               id="email"
@@ -146,21 +179,40 @@ const LoginPage = () => {
           <div className="mt-8 border-t border-gray-200 pt-6">
             <h3 className="text-sm font-medium text-gray-700 mb-4">Demo Accounts:</h3>
             <div className="grid grid-cols-1 gap-3 text-xs">
-              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>Student:</strong> ahmed.mohamed@student.guc.edu.eg</p>
-                <p><strong>Password:</strong> password123</p>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50 flex items-center justify-between">
+                <div>
+                  <p><strong>Student:</strong> ahmed.mohamed@student.guc.edu.eg</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <Button size="xs" variant="outline" onClick={() => handleDemoLogin(UserRole.STUDENT)}>Login</Button>
               </div>
-              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>Company:</strong> john.smith@techcorp.com</p>
-                <p><strong>Password:</strong> password123</p>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50 flex items-center justify-between">
+                <div>
+                  <p><strong>Company:</strong> john.smith@techcorp.com</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <Button size="xs" variant="outline" onClick={() => handleDemoLogin(UserRole.COMPANY)}>Login</Button>
               </div>
-              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>SCAD Office:</strong> mohamed.hassan@guc.edu.eg</p>
-                <p><strong>Password:</strong> password123</p>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50 flex items-center justify-between">
+                <div>
+                  <p><strong>SCAD Office:</strong> mohamed.hassan@guc.edu.eg</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <Button size="xs" variant="outline" onClick={() => handleDemoLogin(UserRole.SCAD_OFFICE)}>Login</Button>
               </div>
-              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>Faculty Member:</strong> sara.ahmed@techcorp.com</p>
-                <p><strong>Password:</strong> password123</p>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50 flex items-center justify-between">
+                <div>
+                  <p><strong>Faculty Member:</strong> sara.ahmed@techcorp.com</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <Button size="xs" variant="outline" onClick={() => handleDemoLogin(UserRole.SUPERVISOR)}>Login</Button>
+              </div>
+              <div className="p-2 border border-gray-200 rounded-md bg-gray-50 flex items-center justify-between">
+                <div>
+                  <p><strong>ProStudent Demo:</strong> prostudentdemo@guc.edu.eg</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <Button size="xs" variant="outline" onClick={() => handleDemoLogin(UserRole.PRO_STUDENT)}>Login</Button>
               </div>
             </div>
           </div>

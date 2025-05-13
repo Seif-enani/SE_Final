@@ -159,4 +159,22 @@ export const dummyUsers: User[] = [
     assignedReports: ['r2'],
     createdAt: '2021-09-01T08:15:00Z',
   } as AcademicStaff,
+  
+  // ProStudent demo user
+  {
+    id: 'ps1',
+    name: 'Pro Student Demo',
+    email: 'prostudentdemo@guc.edu.eg',
+    password: 'password123',
+    role: UserRole.PRO_STUDENT,
+    profileImage: 'https://randomuser.me/api/portraits/men/99.jpg',
+    studentId: '49-9999',
+    faculty: 'Engineering',
+    major: 'Computer Science',
+    gpa: 3.9,
+    graduationYear: 2025,
+    appliedInternships: [],
+    completedInternships: [],
+    createdAt: '2025-01-01T10:00:00Z',
+  } as Student,
 ];

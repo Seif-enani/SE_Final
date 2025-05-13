@@ -64,6 +64,16 @@ import SettingsPage from '../pages/shared/SettingsPage';
 import SupportPage from '../pages/shared/SupportPage';
 import NotFoundPage from '../pages/shared/NotFoundPage';
 
+// ProStudent Pages
+import ProStudentDashboard from '../pages/prostudent/ProStudentDashboard';
+import ProBrowseInternships from '../pages/prostudent/ProBrowseInternships';
+import ProInternshipDetails from '../pages/prostudent/ProInternshipDetails';
+import ProStudentApplication from '../pages/prostudent/ProStudentApplication';
+import ProStudentReports from '../pages/prostudent/ProStudentReports';
+import ProStudentNotifications from '../pages/prostudent/ProStudentNotifications';
+import ProStudentAppointments from '../pages/prostudent/ProStudentAppointments';
+import ProStudentAdvanced from '../pages/prostudent/ProStudentAdvanced';
+
 interface ProtectedRouteProps {
   children: JSX.Element;
   requiredRoles?: UserRole[];
@@ -89,6 +99,8 @@ const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
         return <Navigate to="/faculty" />;
       case UserRole.ACADEMIC_STAFF:
         return <Navigate to="/academic" />;
+      case UserRole.PRO_STUDENT:
+        return <Navigate to="/prostudent" />;
       default:
         return <Navigate to="/" />;
     }
@@ -373,6 +385,72 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requiredRoles={[UserRole.ACADEMIC_STAFF]}>
             <AppLayout><AcademicEvaluations /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* ProStudent Routes */}
+      <Route
+        path="/prostudent"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentDashboard /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/internships"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProBrowseInternships /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/internship/:id"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProInternshipDetails /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/applications"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentApplication /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/reports"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentReports /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/notifications"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentNotifications /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/appointments"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentAppointments /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/prostudent/advanced"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.PRO_STUDENT]}>
+            <AppLayout><ProStudentAdvanced /></AppLayout>
           </ProtectedRoute>
         }
       />
