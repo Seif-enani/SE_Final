@@ -49,7 +49,6 @@ import SCADWorkshops from '../pages/scad/SCADWorkshops';
 
 // Faculty Member Pages
 import FacultyMemberDashboard from '../pages/facultyMember/SupervisorDashboard';
-import FacultyMemberStudents from '../pages/facultyMember/SupervisorStudents';
 import FacultyMemberEvaluations from '../pages/facultyMember/SupervisorEvaluations';
 import FacultyReports from '../pages/facultyMember/FacultyReports';
 import FacultyStatistics from '../pages/facultyMember/FacultyStatistics';
@@ -324,14 +323,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
             <AppLayout><FacultyMemberDashboard /></AppLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/faculty/students"
-        element={
-          <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
-            <AppLayout><FacultyMemberStudents /></AppLayout>
           </ProtectedRoute>
         }
       />
