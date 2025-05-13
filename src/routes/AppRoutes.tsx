@@ -47,10 +47,12 @@ import SCADEvaluations from '../pages/scad/SCADEvaluations';
 import SCADAppointments from '../pages/scad/SCADAppointments';
 import SCADWorkshops from '../pages/scad/SCADWorkshops';
 
-// Supervisor Pages
-import SupervisorDashboard from '../pages/supervisor/SupervisorDashboard';
-import SupervisorStudents from '../pages/supervisor/SupervisorStudents';
-import SupervisorEvaluations from '../pages/supervisor/SupervisorEvaluations';
+// Faculty Member Pages
+import FacultyMemberDashboard from '../pages/facultyMember/SupervisorDashboard';
+import FacultyMemberStudents from '../pages/facultyMember/SupervisorStudents';
+import FacultyMemberEvaluations from '../pages/facultyMember/SupervisorEvaluations';
+import FacultyReports from '../pages/facultyMember/FacultyReports';
+import FacultyStatistics from '../pages/facultyMember/FacultyStatistics';
 
 // Academic Staff Pages
 import AcademicDashboard from '../pages/academic/AcademicDashboard';
@@ -85,7 +87,7 @@ const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
       case UserRole.SCAD_OFFICE:
         return <Navigate to="/scad" />;
       case UserRole.SUPERVISOR:
-        return <Navigate to="/supervisor" />;
+        return <Navigate to="/faculty" />;
       case UserRole.ACADEMIC_STAFF:
         return <Navigate to="/academic" />;
       default:
@@ -316,28 +318,44 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Supervisor Routes */}
+      {/* Faculty Member Routes */}
       <Route
-        path="/supervisor"
+        path="/faculty"
         element={
           <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
-            <AppLayout><SupervisorDashboard /></AppLayout>
+            <AppLayout><FacultyMemberDashboard /></AppLayout>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/supervisor/students"
+        path="/faculty/students"
         element={
           <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
-            <AppLayout><SupervisorStudents /></AppLayout>
+            <AppLayout><FacultyMemberStudents /></AppLayout>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/supervisor/evaluations"
+        path="/faculty/evaluations"
         element={
           <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
-            <AppLayout><SupervisorEvaluations /></AppLayout>
+            <AppLayout><FacultyMemberEvaluations /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/reports"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
+            <AppLayout><FacultyReports /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/faculty/statistics"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SUPERVISOR]}>
+            <AppLayout><FacultyStatistics /></AppLayout>
           </ProtectedRoute>
         }
       />

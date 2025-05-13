@@ -80,9 +80,10 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
       break;
     case UserRole.SUPERVISOR:
       navItems.push(
-        { path: '/supervisor', label: 'Dashboard', icon: <Home size={20} /> },
-        { path: '/supervisor/students', label: 'My Students', icon: <Users size={20} /> },
-        { path: '/supervisor/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
+        { path: '/faculty', label: 'Dashboard', icon: <Home size={20} /> },
+        { path: '/faculty/reports', label: 'Internship Reports', icon: <FileText size={20} /> },
+        { path: '/faculty/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
+        { path: '/faculty/statistics', label: 'Statistics', icon: <BarChart size={20} /> },
       );
       break;
     case UserRole.ACADEMIC_STAFF:

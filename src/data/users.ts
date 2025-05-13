@@ -119,32 +119,19 @@ export const dummyUsers: User[] = [
     createdAt: '2022-01-01T08:00:00Z',
   } as SCADOffice,
   
-  // Supervisor users
+  // Faculty Member users (formerly Supervisor)
   {
-    id: 'sup1',
-    name: 'Khaled Ahmed',
-    email: 'khaled.ahmed@techcorp.com',
+    id: 'f1',
+    name: 'Sara Ahmed',
+    email: 'sara.ahmed@techcorp.com',
     password: 'password123',
-    role: UserRole.SUPERVISOR,
-    profileImage: 'https://randomuser.me/api/portraits/men/40.jpg',
+    role: UserRole.SUPERVISOR, // Faculty Member role
+    profileImage: 'https://randomuser.me/api/portraits/women/42.jpg',
     companyName: 'TechCorp Solutions',
     department: 'Software Development',
-    position: 'Senior Software Engineer',
-    assignedStudents: ['s1'],
-    createdAt: '2022-05-15T09:30:00Z',
-  } as Supervisor,
-  {
-    id: 'sup2',
-    name: 'Fatima Ibrahim',
-    email: 'fatima.ibrahim@finbank.com',
-    password: 'password123',
-    role: UserRole.SUPERVISOR,
-    profileImage: 'https://randomuser.me/api/portraits/women/41.jpg',
-    companyName: 'FinBank International',
-    department: 'Business Analytics',
-    position: 'Analytics Manager',
-    assignedStudents: ['s2'],
-    createdAt: '2022-06-20T10:15:00Z',
+    position: 'Faculty Member',
+    assignedStudents: [],
+    createdAt: '2022-07-01T09:00:00Z',
   } as Supervisor,
   
   // Academic Staff users

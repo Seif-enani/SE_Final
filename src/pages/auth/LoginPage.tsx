@@ -44,10 +44,7 @@ const LoginPage = () => {
               navigate('/scad');
               break;
             case UserRole.SUPERVISOR:
-              navigate('/supervisor');
-              break;
-            case UserRole.ACADEMIC_STAFF:
-              navigate('/academic');
+              navigate('/faculty');
               break;
             default:
               navigate('/');
@@ -162,11 +159,7 @@ const LoginPage = () => {
                 <p><strong>Password:</strong> password123</p>
               </div>
               <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>Supervisor:</strong> sara.ahmed@techcorp.com</p>
-                <p><strong>Password:</strong> password123</p>
-              </div>
-              <div className="p-2 border border-gray-200 rounded-md bg-gray-50">
-                <p><strong>Academic Staff:</strong> dr.mahmoud@guc.edu.eg</p>
+                <p><strong>Faculty Member:</strong> sara.ahmed@techcorp.com</p>
                 <p><strong>Password:</strong> password123</p>
               </div>
             </div>
