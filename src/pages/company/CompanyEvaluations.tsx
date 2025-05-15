@@ -61,15 +61,6 @@ const dummyApplicants: Record<string, {
 const initialScadEvaluations = [
   {
     id: 'scad1',
-    studentId: 's1',
-    internshipId: 'i1',
-    content: 'Ahmed demonstrated strong technical skills and adaptability throughout his internship. He consistently met deadlines and contributed valuable ideas to the team.',
-    rating: 5,
-    evaluator: 'SCAD Office',
-    date: '2025-05-10',
-  },
-  {
-    id: 'scad2',
     studentId: 's2',
     internshipId: 'i2',
     content: 'Sara showed excellent analytical thinking and professionalism. She was proactive in seeking feedback and improving her work.',
@@ -77,6 +68,7 @@ const initialScadEvaluations = [
     evaluator: 'SCAD Office',
     date: '2025-05-10',
   },
+  // Do NOT add an evaluation for s1/i1 so Add New Evaluation is enabled
 ];
 
 const CompanyEvaluations = () => {
@@ -103,7 +95,8 @@ const CompanyEvaluations = () => {
 
   // CRUD Handlers
   const handleScadAddNew = () => {
-    setScadForm({ studentId: unevaluatedInterns[0]?.studentId || '', internshipId: unevaluatedInterns[0]?.internshipId || '', content: '', rating: 5 });
+    if (unevaluatedInterns.length === 0) return;
+    setScadForm({ studentId: unevaluatedInterns[0].studentId, internshipId: unevaluatedInterns[0].internshipId, content: '', rating: 5 });
     setScadShowForm(true);
     setScadEditingId(null);
   };

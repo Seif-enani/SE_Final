@@ -306,6 +306,16 @@ export const dummyApplications: Application[] = [
     appliedAt: '2025-02-15T10:00:00Z',
     updatedAt: '2025-02-16T10:00:00Z',
   },
+  {
+    id: 'a99',
+    internshipId: 'i1',
+    studentId: 's1',
+    status: 'complete',
+    coverLetter: 'Completed internship and ready for evaluation.',
+    resumeUrl: '/dummy-resume-complete.pdf',
+    appliedAt: '2025-03-01T10:00:00Z',
+    updatedAt: '2025-05-10T10:00:00Z',
+  }
 ];
 
 export const dummyReports: Report[] = [
