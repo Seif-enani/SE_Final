@@ -218,19 +218,18 @@ const ProStudentAdvanced = () => {
 
       {/* Workshops */}
       <Card>
-        <CardHeader title="Upcoming Online Career Workshops" />
+        <CardHeader title="Upcoming & Live Online Career Workshops" />
         <CardContent>
           <ul>
             {workshops.map(w => (
               <li key={w.id} className="mb-2">
                 <strong>{w.title}</strong> ({w.date})
-                {w.registered ? (
-                  <>
-                    {w.live && <Button size="sm" className="ml-2" onClick={() => setSelectedWorkshop(w.id)}>Join</Button>}
-                  </>
-                ) : (
+                {/* If live and registered, show Join. If not registered, show Register. Always show Details. */}
+                {w.live && w.registered ? (
+                  <Button size="sm" className="ml-2" onClick={() => setSelectedWorkshop(w.id)}>Join</Button>
+                ) : !w.registered ? (
                   <Button size="sm" className="ml-2" onClick={() => setShowRegisterForm(w.id)}>Register</Button>
-                )}
+                ) : null}
                 <Button size="sm" className="ml-2" onClick={() => setShowWorkshopDetails(w.id)}>Details</Button>
               </li>
             ))}
@@ -341,7 +340,28 @@ const ProStudentAdvanced = () => {
               <li key={w.id} className="mb-4">
                 <div className="font-medium">{w.title} ({w.date})</div>
                 <div className="flex items-center gap-2 mt-1">
-                  {certificates[w.id] && <span className="text-green-600">Certificate Generated!</span>}
+                  {certificates[w.id] ? (
+                    <>
+                      <span className="text-green-600">Certificate Generated!</span>
+                      <Button size="sm" variant="outline" onClick={() => {
+                        // Generate and download PDF certificate
+                        const element = document.createElement('div');
+                        element.innerHTML = `
+                          <h2>Certificate of Completion</h2>
+                          <h3>This certifies that you have successfully completed the workshop:</h3>
+                          <h1>${w.title}</h1>
+                          <p>Date: ${w.date}</p>
+                        `;
+                        if (window.html2pdf) {
+                          window.html2pdf().from(element).save(`${w.title}-certificate.pdf`);
+                        } else {
+                          alert('PDF generation is not available in this environment.');
+                        }
+                      }}>Download Certificate</Button>
+                    </>
+                  ) : (
+                    <Button size="sm" variant="primary" onClick={() => handleGetCertificate(w.id)}>Get Certificate</Button>
+                  )}
                   <label className="ml-2">Rate:
                     <input
                       type="number"

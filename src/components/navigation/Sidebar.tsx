@@ -76,6 +76,7 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
         { path: '/scad/evaluations', label: 'Evaluations', icon: <CheckSquare size={20} /> },
         { path: '/scad/appointments', label: 'Appointments & Video Calls', icon: <Video size={20} /> },
         { path: '/scad/workshops', label: 'Workshops', icon: <Briefcase size={20} /> },
+        { path: '/scad/notifications', label: 'Notifications', icon: <Bell size={20} /> },
       );
       break;
     case UserRole.SUPERVISOR:

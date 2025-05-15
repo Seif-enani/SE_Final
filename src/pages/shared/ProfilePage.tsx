@@ -6,6 +6,7 @@ import { Input, Textarea, Select } from '../../components/common/FormElements';
 import { Link } from 'react-router-dom';
 import { FileInput } from '../../components/common/FormElements';
 import { UserRole, Student } from '../../types/user';
+import MajorSemesterCourses from '../../components/common/MajorSemesterCourses';
 
 const majorsList = [
   'Computer Science',
@@ -233,11 +234,6 @@ const ProfilePage = () => {
                     ))}
                   </ul>
                 </div>
-                <div className="mt-6">
-                  <strong>Majors List:</strong> {majorsList.join(', ')}
-                  <br />
-                  <strong>Semester Numbers:</strong> {semesterNumbers.join(', ')}
-                </div>
                 {/* Extra Documents Upload Section */}
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Extra Documents</h3>
@@ -270,6 +266,8 @@ const ProfilePage = () => {
                     </ul>
                   )}
                 </div>
+                {/* New: Major & Semester Courses Selection */}
+                <MajorSemesterCourses />
               </>
             ) : (
               <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleSave(); }}>

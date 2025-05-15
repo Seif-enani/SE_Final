@@ -11,11 +11,14 @@ import {
   BarChart, 
   CalendarDays,
   Search,
-  Bell
+  Bell,
+  Award,
+  Star
 } from 'lucide-react';
 import { dummyInternships } from '../../data/internships';
 import { Student } from '../../types/user';
 import StudentNotifications from '../student/StudentNotifications';
+import { useState } from 'react';
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
@@ -29,6 +32,17 @@ const StudentDashboard = () => {
   const activeInternshipDetails = student?.activeInternship 
     ? dummyInternships.find(internship => internship.id === student.activeInternship)
     : null;
+  
+  const getTotalInternshipWeeks = () => {
+    // Dummy: Assume student.completedInternships is an array of internship IDs
+    if (!student?.completedInternships) return 0;
+    return student.completedInternships.reduce((sum, internshipId) => {
+      const internship = dummyInternships.find(i => i.id === internshipId);
+      return sum + (internship ? internship.duration : 0);
+    }, 0);
+  };
+  const hasProBadge = getTotalInternshipWeeks() >= 12;
+  const [showProBadge, setShowProBadge] = useState(false);
   
   return (
     <div className="space-y-6">
@@ -68,9 +82,26 @@ const StudentDashboard = () => {
           <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
             <CheckCircle size={24} />
           </div>
-          <div>
-            <p className="text-sm font-medium text-gray-600">Completed Internships</p>
-            <h3 className="text-2xl font-bold text-gray-900">{completedInternships}</h3>
+          <div className="flex items-center gap-2">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Completed Internships</p>
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                {completedInternships}
+                {/* PRO badge button */}
+                <button
+                  className="ml-2 px-2 py-1 rounded bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 text-white text-xs font-bold shadow hover:scale-105 transition-transform"
+                  title="Show PRO Badge"
+                  onClick={() => setShowProBadge(v => !v)}
+                >
+                  <Star size={16} className="inline-block mr-1" />PRO
+                </button>
+                {showProBadge && (
+                  <span className="ml-3 animate-bounce px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 text-white font-bold shadow-lg border-2 border-white">
+                    <Star size={18} className="inline-block mr-1" />PRO
+                  </span>
+                )}
+              </h3>
+            </div>
           </div>
         </Card>
       </div>
@@ -242,7 +273,14 @@ const StudentDashboard = () => {
                   alt="Profile" 
                   className="h-24 w-24 rounded-full object-cover mb-4"
                 />
-                <h3 className="text-lg font-medium text-gray-900">{student?.name}</h3>
+                <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
+                  {student?.name}
+                  {hasProBadge && (
+                    <span className="inline-flex items-center px-2 py-1 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xs font-bold rounded-full ml-2 animate-pulse">
+                      <Award size={16} className="mr-1" /> PRO
+                    </span>
+                  )}
+                </h3>
                 <p className="text-gray-600 mb-4">{student?.studentId}</p>
                 
                 <div className="w-full mt-2 space-y-2">

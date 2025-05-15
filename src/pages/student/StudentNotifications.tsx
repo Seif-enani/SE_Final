@@ -27,6 +27,24 @@ const dummyStudentNotifications = [
     message: 'Your application for Business Analyst Intern at FinBank International has been accepted.',
     timestamp: '2024-05-20 10:00',
   },
+  {
+    id: 5,
+    type: 'system',
+    message: 'Your internship report "Final Report - Summer 2023" has been approved. Congratulations!',
+    timestamp: '2024-06-12 11:00',
+  },
+  {
+    id: 6,
+    type: 'system',
+    message: 'Your internship report "Midterm Report - Spring 2023" has been rejected. Please review the comments and resubmit.',
+    timestamp: '2024-06-13 14:30',
+  },
+  {
+    id: 7,
+    type: 'system',
+    message: 'Your internship report "Final Report - Winter 2023" has been submitted and is under review.',
+    timestamp: '2024-06-14 09:15',
+  },
 ];
 
 const StudentNotifications = () => {
@@ -59,4 +77,4 @@ const StudentNotifications = () => {
   );
 };
 
-export default StudentNotifications; 
+export default StudentNotifications;

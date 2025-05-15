@@ -108,6 +108,7 @@ const SCADReports = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [facultyFilter, setFacultyFilter] = useState('');
+  const [majorFilter, setMajorFilter] = useState('');
   
   // Get evaluators
   const academicStaff = dummyUsers.filter(user => user.role === UserRole.ACADEMIC_STAFF);
@@ -118,6 +119,24 @@ const SCADReports = () => {
     user.role === UserRole.STUDENT && studentIds.includes(user.id)
   );
   const faculties = [...new Set(students.map((student: any) => student.faculty))];
+  const majors = [...new Set(students.map((student: any) => student.major))];
+
+  // Update status filter options
+  const statusOptions = [
+    { value: '', label: 'All Statuses' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'flagged', label: 'Flagged' },
+    { value: 'rejected', label: 'Rejected' },
+    { value: 'approved', label: 'Accepted' },
+  ];
+
+  // Map status filter to actual report statuses
+  const statusMap: Record<string, string[]> = {
+    pending: ['submitted', 'revised', 'evaluated'],
+    flagged: ['flagged'],
+    rejected: ['rejected'],
+    approved: ['approved'],
+  };
 
   // Filter reports based on search and filters
   const filteredReports = allDummyReports.filter(report => {
@@ -129,11 +148,15 @@ const SCADReports = () => {
       internship?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student?.name.toLowerCase().includes(searchTerm.toLowerCase());
       
-    const matchesStatus = statusFilter === '' || report.status === statusFilter;
+    // Status filter
+    const matchesStatus = statusFilter === '' || (statusMap[statusFilter] || []).includes(report.status);
+    // Major filter
+    const matchesMajor = majorFilter === '' || (student && 'major' in student && (student as any).major === majorFilter);
+    // Faculty filter
     const matchesFaculty = facultyFilter === '' || 
       (student && 'faculty' in student && (student as any).faculty === facultyFilter);
     
-    return matchesSearch && matchesStatus && matchesFaculty;
+    return matchesSearch && matchesStatus && matchesFaculty && matchesMajor;
   });
 
   const handleAssignEvaluator = (reportId: string, evaluatorId: string) => {
@@ -359,16 +382,17 @@ const SCADReports = () => {
         
         <div className="md:w-48">
           <Select
+            value={majorFilter}
+            onChange={(e) => setMajorFilter(e.target.value)}
+            options={[{ value: '', label: 'All Majors' }, ...majors.map(major => ({ value: major, label: major }))]}
+          />
+        </div>
+        
+        <div className="md:w-48">
+          <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            options={[
-              { value: '', label: 'All Statuses' },
-              { value: 'submitted', label: 'Submitted' },
-              { value: 'evaluated', label: 'Evaluated' },
-              { value: 'approved', label: 'Approved' },
-              { value: 'rejected', label: 'Rejected' },
-              { value: 'revised', label: 'Revised' },
-            ]}
+            options={statusOptions}
           />
         </div>
       </div>

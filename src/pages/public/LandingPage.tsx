@@ -40,7 +40,7 @@ const LandingPage = () => {
                   <Button 
                     variant="primary"
                     size="lg"
-                    className="bg-white text-blue-700 hover:bg-blue-50 w-full sm:w-auto"
+                    className="bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800 w-full sm:w-auto shadow-md"
                   >
                     Register Now
                   </Button>
@@ -49,7 +49,7 @@ const LandingPage = () => {
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-white text-white hover:bg-blue-700 w-full sm:w-auto"
+                    className="bg-transparent border border-white text-white hover:bg-white hover:text-blue-700 w-full sm:w-auto"
                   >
                     Sign In
                   </Button>

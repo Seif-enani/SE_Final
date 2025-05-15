@@ -24,10 +24,11 @@ const FacultyReports = () => {
   const [major, setMajor] = useState('');
   const [search, setSearch] = useState('');
   const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [reports, setReports] = useState([...dummyReports]);
   const [clarification, setClarification] = useState('');
 
   // Filter reports
-  const filteredReports = dummyReports.filter(r => {
+  const filteredReports = reports.filter(r => {
     const student = dummyUsers.find(u => u.id === r.studentId && u.role === 'student');
     return (
       (!status || r.status === status) &&
@@ -42,15 +43,20 @@ const FacultyReports = () => {
   };
 
   const handleStatusChange = (reportId: string, newStatus: string) => {
-    // Dummy status update logic
-    alert('Status for report ' + reportId + ' set to ' + newStatus);
-    setSelectedReport(null);
+    setReports(prev => prev.map(r => r.id === reportId ? { ...r, status: newStatus } : r));
+    setSelectedReport(reports.find(r => r.id === reportId));
+    setClarification('');
   };
 
   const handleClarificationSubmit = () => {
-    alert('Clarification submitted: ' + clarification);
+    if (!clarification.trim()) return;
+    setReports(prev => prev.map(r =>
+      r.id === selectedReport.id
+        ? { ...r, clarifications: [...(r.clarifications || []), { text: clarification, date: new Date().toISOString() }] }
+        : r
+    ));
+    setSelectedReport(prev => prev ? { ...prev, clarifications: [...(prev.clarifications || []), { text: clarification, date: new Date().toISOString() }] } : prev);
     setClarification('');
-    setSelectedReport(null);
   };
 
   return (
@@ -109,6 +115,17 @@ const FacultyReports = () => {
                 <Button size="sm" variant="outline" leftIcon={<AlertCircle size={16} />} onClick={() => handleStatusChange(selectedReport.id, 'flagged')}>Flag</Button>
               </div>
             </div>
+            {/* Show clarifications if any */}
+            {selectedReport.clarifications && selectedReport.clarifications.length > 0 && (
+              <div className="mb-4">
+                <div className="font-semibold mb-2">Clarifications:</div>
+                <ul className="list-disc ml-6 text-sm">
+                  {selectedReport.clarifications.map((c: any, idx: number) => (
+                    <li key={idx}><span>{c.text}</span> <span className="text-xs text-gray-400">({new Date(c.date).toLocaleString()})</span></li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {/* Clarification for flagged/rejected */}
             {(selectedReport.status === 'flagged' || selectedReport.status === 'rejected') && (
               <div className="mb-4">
@@ -124,4 +141,4 @@ const FacultyReports = () => {
   );
 };
 
-export default FacultyReports; 
+export default FacultyReports;

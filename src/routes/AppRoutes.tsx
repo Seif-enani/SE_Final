@@ -46,6 +46,7 @@ import SCADStudentProfile from '../pages/scad/SCADStudentProfile';
 import SCADEvaluations from '../pages/scad/SCADEvaluations';
 import SCADAppointments from '../pages/scad/SCADAppointments';
 import SCADWorkshops from '../pages/scad/SCADWorkshops';
+import SCADNotifications from '../pages/scad/SCADNotifications';
 
 // Faculty Member Pages
 import FacultyMemberDashboard from '../pages/facultyMember/SupervisorDashboard';
@@ -325,6 +326,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
             <AppLayout><SCADWorkshops /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scad/notifications"
+        element={
+          <ProtectedRoute requiredRoles={[UserRole.SCAD_OFFICE]}>
+            <AppLayout><SCADNotifications /></AppLayout>
           </ProtectedRoute>
         }
       />

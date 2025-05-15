@@ -38,8 +38,16 @@ const initialWorkshops = [
   },
 ];
 
+const statusOptions = [
+  { value: '', label: 'No Status' },
+  { value: 'accepted', label: 'Accepted' },
+  { value: 'flagged', label: 'Flagged' },
+  { value: 'rejected', label: 'Rejected' },
+];
+
 const SCADWorkshops = () => {
-  const [workshops, setWorkshops] = useState(initialWorkshops);
+  // Add status to each workshop (default: '')
+  const [workshops, setWorkshops] = useState(initialWorkshops.map(w => ({ ...w, status: '' })));
   const [modalOpen, setModalOpen] = useState(false);
   const [editWorkshop, setEditWorkshop] = useState<any>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -143,6 +151,11 @@ const SCADWorkshops = () => {
   const addDrawerAgenda = () => setEditDrawerForm((f: any) => ({ ...f, agenda: [...f.agenda, ''] }));
   const removeDrawerAgenda = (idx: number) => setEditDrawerForm((f: any) => ({ ...f, agenda: f.agenda.filter((_: any, i: number) => i !== idx) }));
 
+  // Handler to change status
+  const handleStatusChange = (id: string, status: string) => {
+    setWorkshops(ws => ws.map(w => w.id === id ? { ...w, status } : w));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -170,6 +183,23 @@ const SCADWorkshops = () => {
                       <div className="text-sm text-gray-600 flex items-center gap-3">
                         <Calendar size={14} className="inline mr-1" /> {new Date(w.start).toLocaleDateString()} &ndash; {new Date(w.end).toLocaleDateString()}
                         <Clock size={14} className="inline ml-3 mr-1" /> {new Date(w.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(w.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                      {/* Status Dropdown */}
+                      <div className="mt-2">
+                        <label className="text-xs font-medium mr-2">Status:</label>
+                        <select
+                          className="border rounded px-2 py-1 text-xs"
+                          value={w.status || ''}
+                          onChange={e => { e.stopPropagation(); handleStatusChange(w.id, e.target.value); }}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          {statusOptions.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                        {w.status && (
+                          <span className={`ml-2 px-2 py-0.5 rounded text-xs font-semibold ${w.status === 'accepted' ? 'bg-green-100 text-green-700' : w.status === 'flagged' ? 'bg-yellow-100 text-yellow-700' : w.status === 'rejected' ? 'bg-red-100 text-red-700' : ''}`}>{w.status.charAt(0).toUpperCase() + w.status.slice(1)}</span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -461,4 +491,4 @@ const SCADWorkshops = () => {
   );
 };
 
-export default SCADWorkshops; 
+export default SCADWorkshops;

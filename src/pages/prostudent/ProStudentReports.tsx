@@ -241,6 +241,8 @@ const StudentReports = () => {
   ]);
   const [editingEval, setEditingEval] = useState<StudentCompanyEvaluation | null>(null);
   const [showEvalForm, setShowEvalForm] = useState(false);
+  // State for evaluation error
+  const [evalError, setEvalError] = useState<string | null>(null);
 
   // Report form state
   const [reportForm, setReportForm] = useState({
@@ -301,79 +303,65 @@ const StudentReports = () => {
               reports.map(report => (
                 <Card key={report.id} className="hover:shadow-md transition-shadow">
                   <CardContent>
-                    <div className="flex justify-between items-start">
+                    <div className="flex justify-between items-center">
                       <div>
-                        <h2 className="text-xl font-semibold text-gray-900">{report.title}</h2>
-                        <p className="text-gray-600">{dummyInternships.find(i => i.id === report.internshipId)?.title || 'Internship'} at {companies.find(c => c.id === dummyInternships.find(i => i.id === report.internshipId)?.companyId)?.name}</p>
-                        <div className="mt-3 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <Calendar size={16} className="mr-2" />
-                            <span>Submitted on {report.submissionDate ? new Date(report.submissionDate).toLocaleDateString() : 'N/A'}</span>
-                          </div>
+                        <h3 className="font-semibold text-lg">{report.title}</h3>
+                        <div className="flex items-center mt-1">
+                          <span className={getStatusBadge(report.status).className}>{getStatusBadge(report.status).icon}{report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <span className={getStatusBadge(report.status).className}>
-                          {getStatusBadge(report.status).icon}
-                          {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                        </span>
-                        <Button size="sm" variant="outline" onClick={() => handleDownloadPDF(report)}>Download PDF</Button>
-                        <Button size="sm" variant="outline" onClick={() => {
-                          setEditingReport(report);
-                          setShowReportForm(true);
-                          setReportForm({
-                            id: report.id,
-                            internshipId: report.internshipId,
-                            title: report.title,
-                            introduction: report.content.split('---BODY---')[0] || '',
-                            body: report.content.split('---BODY---')[1] || '',
-                            selectedCourses: (report as any).selectedCourses || [],
-                            attachments: report.attachments || [],
-                            status: report.status,
-                          });
-                        }}>Edit</Button>
-                        <Button size="sm" variant="danger" onClick={() => handleDeleteReport(report.id)}>Delete</Button>
+                      <div className="flex gap-2">
+                        {report.status === 'draft' && (
+                          <Button variant="primary" onClick={() => {
+                            setReports(reports.map(r => r.id === report.id ? { ...r, status: 'submitted' } : r));
+                          }}>Submit</Button>
+                        )}
+                        <Button variant="outline" onClick={() => { setEditingReport(report); setShowReportForm(true); setReportForm({
+                          id: report.id,
+                          internshipId: report.internshipId,
+                          title: report.title,
+                          introduction: report.content.split('---BODY---')[0] || '',
+                          body: report.content.split('---BODY---')[1] || '',
+                          selectedCourses: report.selectedCourses || [],
+                          attachments: report.attachments || [],
+                          status: report.status,
+                        }); }}>Edit</Button>
+                        <Button variant="danger" onClick={() => handleDeleteReport(report.id)}>Delete</Button>
+                        <Button variant="outline" onClick={() => handleDownloadPDF(report)}>Download PDF</Button>
+                        {report.status === 'rejected' && (
+                          <Button variant="warning" onClick={() => { setAppealReportId(report.id); setAppealModalOpen(true); setAppealMessage(''); setAppealSuccess(false); }}>Appeal</Button>
+                        )}
                       </div>
                     </div>
-                    {/* Expanded details, similar to before */}
-                    {report.status === 'rejected' && (
-                      <div className="mt-4">
-                        {(report as any).comments && (
-                          <div className="bg-red-50 border border-red-200 rounded p-4 mb-2">
-                            <h4 className="font-semibold text-red-700 mb-2">Comments</h4>
-                            <ul className="space-y-2">
-                              {(report as any).comments.map((comment: any) => (
-                                <li key={comment.id} className="text-sm text-gray-800">
-                                  <span className="font-medium text-gray-900">{comment.author}:</span> {comment.text}
-                                  <span className="ml-2 text-xs text-gray-500">({new Date(comment.date).toLocaleDateString()})</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {appeals[report.id] ? (
-                          <div className="bg-green-50 border border-green-200 rounded p-3 mt-2">
-                            <strong>Your Appeal:</strong> {appeals[report.id]}
-                          </div>
-                        ) : (
-                          <Button size="sm" variant="primary" onClick={() => { setAppealModalOpen(true); setAppealReportId(report.id); setAppealMessage(''); setAppealSuccess(false); }}>Appeal</Button>
-                        )}
-                      </div>
-                    )}
+                    <div className="mt-2">
+                      <button className="text-blue-600 underline text-sm" onClick={() => toggleReportExpand(report.id)}>{expandedReportId === report.id ? 'Hide Details' : 'Show Details'}</button>
+                      {expandedReportId === report.id && (
+                        <div className="mt-2 border-t pt-2 text-sm">
+                          <div><strong>Introduction:</strong> {report.content.split('---BODY---')[0]}</div>
+                          <div><strong>Body:</strong> {report.content.split('---BODY---')[1]}</div>
+                          {report.selectedCourses && report.selectedCourses.length > 0 && (
+                            <div><strong>Courses that helped:</strong> {report.selectedCourses.join(', ')}</div>
+                          )}
+                          {report.comments && report.comments.length > 0 && (
+                            <div className="mt-2">
+                              <strong>Comments:</strong>
+                              <ul className="list-disc ml-5">
+                                {report.comments.map((c: any) => (
+                                  <li key={c.id}><span className="font-medium">{c.author}:</span> {c.text} <span className="text-xs text-gray-400">({new Date(c.date).toLocaleDateString()})</span></li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))
             ) : (
               <Card>
                 <CardContent>
-                  <div className="text-center py-8">
-                    <div className="rounded-full bg-gray-100 p-4 inline-block mx-auto mb-4">
-                      <FileText className="h-8 w-8 text-gray-400" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No reports yet</h3>
-                    <p className="text-gray-600 mb-4">You haven't submitted any internship reports</p>
-                    <Button variant="primary" onClick={() => setShowReportForm(true)}>Create New Report</Button>
-                  </div>
+                  <div className="text-gray-500">No reports found.</div>
                 </CardContent>
               </Card>
             )}
@@ -476,7 +464,27 @@ const StudentReports = () => {
             <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
                 <h2 className="text-xl font-bold mb-4">{editingEval ? 'Edit Evaluation' : 'Add Evaluation'}</h2>
-                <form onSubmit={handleEvalFormSubmit}>
+                <form onSubmit={e => {
+                  e.preventDefault();
+                  setEvalError(null);
+                  // Prevent duplicate evaluation for the same company
+                  const alreadyEvaluated = evaluations.some(ev => ev.companyId === evalForm.companyId && (!editingEval || editingEval.companyId !== evalForm.companyId));
+                  if (!evalForm.companyId) {
+                    setEvalError('Please select a company.');
+                    return;
+                  }
+                  if (!editingEval && alreadyEvaluated) {
+                    setEvalError('You have already evaluated this company.');
+                    return;
+                  }
+                  if (editingEval) {
+                    setEvaluations(evaluations.map(ev => ev.id === evalForm.id ? { ...evalForm } : ev));
+                  } else {
+                    setEvaluations([...evaluations, { ...evalForm, id: `e${Date.now()}` }]);
+                  }
+                  setShowEvalForm(false);
+                  setEditingEval(null);
+                }}>
                   <div className="mb-3">
                     <label className="block font-medium mb-1">Company</label>
                     <Select
@@ -506,6 +514,7 @@ const StudentReports = () => {
                     <input type="checkbox" id="recommend" checked={evalForm.recommend} onChange={e => setEvalForm(f => ({ ...f, recommend: e.target.checked }))} />
                     <label htmlFor="recommend" className="ml-2">I recommend this company to other students</label>
                   </div>
+                  {evalError && <div className="text-red-600 mb-2">{evalError}</div>}
                   <div className="flex justify-end space-x-2 mt-4">
                     <Button type="button" variant="outline" onClick={() => setShowEvalForm(false)}>Cancel</Button>
                     <Button type="submit" variant="primary">{editingEval ? 'Update' : 'Add'}</Button>

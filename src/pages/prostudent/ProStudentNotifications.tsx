@@ -38,6 +38,39 @@ const dummyProStudentNotifications = [
 		message: 'New message from attendee: "Great question in the workshop!"',
 		timestamp: '2025-06-01 16:10',
 	},
+	{
+		id: 6,
+		type: 'system',
+		message:
+			'Your internship report "Final Report - Summer 2023" has been approved. Congratulations!',
+		timestamp: '2024-06-12 11:00',
+	},
+	{
+		id: 7,
+		type: 'system',
+		message:
+			'Your internship report "Midterm Report - Spring 2023" has been rejected. Please review the comments and resubmit.',
+		timestamp: '2024-06-13 14:30',
+	},
+	{
+		id: 8,
+		type: 'system',
+		message:
+			'Your internship report "Final Report - Winter 2023" has been submitted and is under review.',
+		timestamp: '2024-06-14 09:15',
+	},
+	{
+		id: 9,
+		type: 'system',
+		message: 'Your appointment with the SCAD Officer has been accepted. Please check your email for details.',
+		timestamp: '2025-05-15 10:30',
+	},
+	{
+		id: 10,
+		type: 'call',
+		message: 'Incoming call from your SCAD Officer. Please join the meeting room.',
+		timestamp: '2025-05-15 11:00',
+	},
 ];
 
 const ProStudentNotifications = () => {

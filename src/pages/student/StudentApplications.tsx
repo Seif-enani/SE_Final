@@ -53,7 +53,42 @@ const StudentApplications = () => {
     },
   ];
   
-  const [statusFilter, setStatusFilter] = useState('all');
+  // Professional filter: 'Current' (accepted & active), 'Finalized' (accepted & ended), 'By Date'
+  const [filter, setFilter] = useState<'all' | 'current' | 'finalized' | 'date'>('all');
+  const [date, setDate] = useState('');
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  // Helper to check if internship is current/finalized
+  const isCurrent = (internship: any, app: any) => {
+    if (app.status !== 'accepted') return false;
+    const now = new Date();
+    return new Date(internship.startDate) <= now && now <= new Date(internship.endDate);
+  };
+  const isFinalized = (internship: any, app: any) => {
+    if (app.status !== 'accepted') return false;
+    const now = new Date();
+    return now > new Date(internship.endDate);
+  };
+
+  const filteredApplications = applications.filter(app => {
+    const internship = dummyInternships.find(i => i.id === app.internshipId);
+    if (!internship) return false;
+    if (filter === 'current') return isCurrent(internship, app);
+    if (filter === 'finalized') return isFinalized(internship, app);
+    if (filter === 'date' && date) {
+      const start = new Date(internship.startDate);
+      const end = new Date(internship.endDate);
+      const d = new Date(date);
+      return d >= start && d <= end;
+    }
+    return true;
+  });
+  
+  useEffect(() => {
+    // Simulate notification logic for acceptance
+    // In a real app, this would push to a notification context or API
+    // For now, notifications are static dummy data in StudentNotifications.tsx
+  }, []);
   
   // Status badge styling
   const getStatusBadge = (status: string) => {
@@ -77,36 +112,33 @@ const StudentApplications = () => {
     };
   };
   
-  // Filter applications based on status filter
-  const filteredApplications = applications.filter(app => {
-    if (statusFilter === 'all') return true;
-    if (statusFilter === 'current') return app.status === 'accepted';
-    if (statusFilter === 'finalized') return app.status === 'finalized';
-    return true;
-  });
-  
-  useEffect(() => {
-    // Simulate notification logic for acceptance
-    // In a real app, this would push to a notification context or API
-    // For now, notifications are static dummy data in StudentNotifications.tsx
-  }, []);
-  
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">My Applications</h1>
         <p className="text-gray-600">Track the status of your internship applications</p>
       </div>
-      <div className="mb-4 flex gap-4">
+      <div className="mb-4 flex gap-4 flex-wrap items-center">
         <select
           className="border rounded px-3 py-2 text-sm"
-          value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value)}
+          value={filter}
+          onChange={e => setFilter(e.target.value as any)}
         >
           <option value="all">All</option>
           <option value="current">Current Internships</option>
           <option value="finalized">Finalized Internships</option>
+          <option value="date">By Date</option>
         </select>
+        {filter === 'date' && (
+          <label className="text-sm text-gray-700">Date:
+            <input
+              type="date"
+              className="ml-1 border rounded px-2 py-1 text-sm"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+            />
+          </label>
+        )}
       </div>
       <div className="space-y-6">
         {filteredApplications.length > 0 ? (
@@ -126,24 +158,27 @@ const StudentApplications = () => {
                         {internship.title}
                       </Link>
                       <p className="text-gray-600">{companyName}</p>
-                      
                       <div className="mt-3 text-sm text-gray-600">
                         <p>Applied on {new Date(application.appliedAt).toLocaleDateString()}</p>
-                        
                         {application.status === 'accepted' && (
                           <p className="mt-1 text-green-600">
-                            Start date: {new Date(internship.startDate).toLocaleDateString()}
+                            Start date: {new Date(internship.startDate).toLocaleDateString()}<br />
+                            End date: {new Date(internship.endDate).toLocaleDateString()}
                           </p>
                         )}
                       </div>
                     </div>
-                    
                     <div className="flex flex-col items-end">
                       <span className={statusBadge.className}>
                         {statusBadge.icon}
                         {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
                       </span>
-                      
+                      <button
+                        className="mt-2 text-xs text-blue-600 hover:underline"
+                        onClick={() => setExpanded(expanded === application.id ? null : application.id)}
+                      >
+                        {expanded === application.id ? 'Hide Details' : 'Show Details'}
+                      </button>
                       {application.status === 'pending' && (
                         <button className="mt-4 text-sm text-red-600 hover:text-red-800">
                           Withdraw Application
@@ -151,22 +186,13 @@ const StudentApplications = () => {
                       )}
                     </div>
                   </div>
-                  
-                  {application.status === 'pending' && (
-                    <div className="mt-4 bg-blue-50 text-blue-700 px-4 py-3 rounded-md">
-                      <p className="text-sm">Your application is under review. We'll notify you when there's an update.</p>
-                    </div>
-                  )}
-                  
-                  {application.status === 'accepted' && (
-                    <div className="mt-4 bg-green-50 text-green-700 px-4 py-3 rounded-md">
-                      <p className="text-sm">Congratulations! Your application has been accepted. Check your email for further instructions.</p>
-                    </div>
-                  )}
-                  
-                  {application.status === 'rejected' && (
-                    <div className="mt-4 bg-red-50 text-red-700 px-4 py-3 rounded-md">
-                      <p className="text-sm">We're sorry, but your application wasn't selected for this opportunity. Keep applying!</p>
+                  {expanded === application.id && (
+                    <div className="mt-4 bg-gray-50 border rounded p-4 text-sm">
+                      <div><strong>Internship Description:</strong> {internship.description || 'No description available.'}</div>
+                      <div className="mt-2"><strong>Location:</strong> {internship.location || 'N/A'}</div>
+                      <div className="mt-2"><strong>Duration:</strong> {new Date(internship.startDate).toLocaleDateString()} - {new Date(internship.endDate).toLocaleDateString()}</div>
+                      <div className="mt-2"><strong>Supervisor:</strong> {internship.supervisor || 'N/A'}</div>
+                      <div className="mt-2"><strong>Stipend:</strong> {internship.stipend ? `EGP ${internship.stipend}/month` : 'Unpaid'}</div>
                     </div>
                   )}
                 </CardContent>
